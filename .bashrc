@@ -142,7 +142,8 @@ PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-
 [ -d "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+shopt -s cdspell
 
 
