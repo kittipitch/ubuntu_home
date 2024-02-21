@@ -66,22 +66,17 @@ emoji=${emoji_list[$index]}
 
 if [ "$color_prompt" = yes ]; then
   if [[ ${EUID} == 0 ]] ; then
+    # root
     PS1=' ${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\h\[\033[01;34m\] \W \$\[\033[00m\] '
+  elif [ "$TERM" = "eterm-color" ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[00;32m\]\u\[\033[00;35m\]$emoji\[\033[00m\]\[\033[00;32m\]\h\[\033[00m\] \[\033[00;33m\]\w\[\033[00m\] \[\033[01;31m\]\n\$\[\033[00m\] '
   else
-    # non-root
-    case "$TERM" in
-      dumb)
-        PS1='${debian_chroot:+($debian_chroot)}\[\033[00;32m\]\u\[\033[00;35m\]$emoji\[\033[00m\]\[\033[00;32m\]\h\[\033[00m\] \[\033[00;33m\]\w\[\033[00m\] \[\033[01;31m\]\n\$\[\033[00m\] '
-        ;;
-      *)
-        PS1='${debian_chroot:+($debian_chroot)}\[\e]0;\u $emoji \h: \w\a\]\n\[\033[00;32m\]\u\[\033[00;35m\]$emoji\[\033[00m\]\[\033[00;32m\]\h\[\033[00m\] \[\033[00;33m\]\w\[\033[00m\] \[\033[01;31m\]\n\$\[\033[00m\] '
-        ;;
-    esac
     PS1='${debian_chroot:+($debian_chroot)}\[\e]0;\u $emoji \h: \w\a\]\n\[\033[00;32m\]\u\[\033[00;35m\]$emoji\[\033[00m\]\[\033[00;32m\]\h\[\033[00m\] \[\033[00;33m\]\w\[\033[00m\] \[\033[01;31m\]\n\$\[\033[00m\] '
   fi
 else
   PS1='${debian_chroot:+($debian_chroot)}\u@\h \w \$ '
 fi
+
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
