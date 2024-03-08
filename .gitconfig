@@ -8,8 +8,10 @@
 	trustExitCode = false
 [merge]
 	tool = kdiff3
+#	tool = meld
 [mergetool]
 	keepBackup = false
 	prompt = false
-	path = kdiff3.exe
+	path = kdiff3
+#	path = meld
 	trustExitCode = false
