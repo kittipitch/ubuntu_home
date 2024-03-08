@@ -4,7 +4,7 @@
 	prompt = false
 [difftool "kdiff3"]
 	# Unix style paths must be converted to windows path style
-	cmd = kdiff3.exe \"`wslpath -w $LOCAL`\" \"`wslpath -w $REMOTE`\"
+	cmd = kdiff3 \"`wslpath -w $LOCAL`\" \"`wslpath -w $REMOTE`\"
 	trustExitCode = false
 [merge]
 	tool = kdiff3
