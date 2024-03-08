@@ -1,5 +1,5 @@
 [diff]
-	guitool = kdiff3
+	guitool = kdiff3.exe
 [difftool]
 	prompt = false
 [difftool "kdiff3"]
@@ -8,11 +8,11 @@
 	trustExitCode = false
 #	cmd = kdiff3 $BASE $LOCAL $REMOTE -o $MERGED
 [merge]
-	tool = kdiff3
+	tool = kdiff3.exe
 #	tool = meld
 [mergetool]
 	keepBackup = false
 	prompt = false
-	path = kdiff3
+	path = kdiff3.exe
 #	path = meld
 	trustExitCode = false
