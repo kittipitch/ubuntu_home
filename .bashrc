@@ -127,8 +127,11 @@ if [[ ! -x "$(command -v /usr/bin/subl)" ]] && [[ -x "$(command -v subl.exe)" ]]
   alias subl='sublime_wsl'
 fi
 
-
 # END -- For Sublime Text on WSL
+
+if [[ -x "$(command -v subl.exe)" ]]; then
+  alias kdiff3="kdiff3.exe"
+fi
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
