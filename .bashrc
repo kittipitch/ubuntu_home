@@ -63,7 +63,7 @@ index=$(($RANDOM % ${#emoji_list[@]}))
 
 emoji=${emoji_list[$index]}
 
-if [ "$TERM" = "eterm-color" ]; then
+if [ "$TERM" = "dumb" ]; then
   PS1='${debian_chroot:+($debian_chroot)}\u@\h \w \$ '
 elif [ "$color_prompt" = yes ]; then
   if [[ ${EUID} == 0 ]] ; then

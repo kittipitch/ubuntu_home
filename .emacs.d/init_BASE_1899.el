@@ -1,0 +1,2 @@
+(setq frame-background-mode 'dark)
+
