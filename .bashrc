@@ -115,13 +115,21 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # START -- For Sublime Text & VSCODE on WSL
 
-if [[ -x "$(command -v subl.exe)" ]]; then
+if command -v subl.exe >/dev/null 2>&1; then
+  SUBLIME_CMD="subl.exe"
+elif command -v sublime_text.exe >/dev/null 2>&1; then
+  SUBLIME_CMD="sublime_text.exe"
+else
+  SUBLIME_CMD=""
+fi
+
+if [[ -n "$SUBLIME_CMD" ]]; then
   function sublime_wsl {
     path_arr=()
     for p in "$@"; do
       path_arr+=("$(wslpath -m "$p")")
     done
-    "subl.exe" "${path_arr[@]}";
+    "$SUBLIME_CMD" "${path_arr[@]}"
   }
   export -f sublime_wsl
   alias subl='sublime_wsl'
