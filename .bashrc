@@ -115,25 +115,52 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # START -- For Sublime Text & VSCODE on WSL
 
-if command -v subl.exe >/dev/null 2>&1; then
-  SUBLIME_CMD="subl.exe"
-elif command -v sublime_text.exe >/dev/null 2>&1; then
-  SUBLIME_CMD="sublime_text.exe"
-else
-  SUBLIME_CMD=""
+if [[ "$(uname -s)" != "Darwin" ]] && \
+   grep -qiE 'microsoft|wsl' /proc/version && \
+   [[ -z "$SUBLIME_CMD" ]]; then
+
+  exes=("subl.exe" "sublime_text.exe")
+  paths=(
+    "/mnt/c/Program Files/Sublime Text"
+    "/mnt/c/Program Files (x86)/Sublime Text"
+    "/mnt/d/Program Files/Sublime Text"
+    "/mnt/d/Program Files (x86)/Sublime Text"
+  )
+
+  for dir in "${paths[@]}"; do
+    for exe in "${exes[@]}"; do
+      candidate="$dir/$exe"
+      if [[ -x "$candidate" ]]; then
+        SUBLIME_CMD="$candidate"
+        break 2
+      fi
+    done
+  done
+
+  # Fallback to PATH if not found in known dirs
+  if [[ -z "$SUBLIME_CMD" ]]; then
+    for exe in "${exes[@]}"; do
+      if command -v "$exe" >/dev/null 2>&1; then
+        SUBLIME_CMD="$(command -v "$exe")"
+        break
+      fi
+    done
+  fi
+
+  # Define subl function + alias
+  if [[ -n "$SUBLIME_CMD" ]]; then
+    function sublime_wsl {
+      local converted=()
+      for f in "$@"; do
+        converted+=("$(wslpath -m "$f")")
+      done
+      "$SUBLIME_CMD" "${converted[@]}"
+    }
+
+    alias subl='sublime_wsl'
+  fi
 fi
 
-if [[ -n "$SUBLIME_CMD" ]]; then
-  function sublime_wsl {
-    path_arr=()
-    for p in "$@"; do
-      path_arr+=("$(wslpath -m "$p")")
-    done
-    "$SUBLIME_CMD" "${path_arr[@]}"
-  }
-  export -f sublime_wsl
-  alias subl='sublime_wsl'
-fi
 
 if [[ -x "$(command -v /mnt/c/Program\ Files/Microsoft\ VS\ Code/Code.exe)" ]]; then
   function vscode_wsl {
