@@ -180,17 +180,6 @@ if [[ -x "$(command -v kdiff3.exe)" ]]; then
   alias kdiff3="kdiff3.exe"
 fi
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-alias emacs='/usr/bin/emacs -nw'
-
-if [ -f ~/.bash_aliases ]; then
-  . ~/.bash_aliases
-fi
-
 
 
 # enable programmable completion features (you don't need to enable
@@ -270,6 +259,65 @@ alias emacs='emacs_or_emacsclient'
 
 ## base16 theming comment this if you want
 [[ -d "$HOME"/.config/tinted-shell ]] && BASE16_SHELL_SET_BACKGROUND=false bash "$HOME"/.config/tinted-shell/scripts/base16-default-dark.sh
+
+
+# ----------------------------------------
+# Tmux Configuration
+# ----------------------------------------
+
+BYOBU_LOG=/tmp/byobu.log
+echo >> $BYOBU_LOG
+date >> $BYOBU_LOG
+if command -v byobu > /dev/null 2>&1; then
+  if [[ -t 1 &&  ( "$TERM_PROGRAM" = "WezTerm" || -z "$TERM_PROGRAM" ) && -z "$TMUX" && -z "$SSH_CONNECTION" ]]; then
+    [[ -z "$PWD" ]] && PWD="$HOME"
+    if byobu list-sessions | grep -q .; then
+      tmux list-panes -a -F '#{session_name}:#{window_index} #{pane_current_path}' >> $BYOBU_LOG
+      echo "---" >> $BYOBU_LOG
+      target_window=$(tmux list-panes -a -F '#{session_name}:#{window_index} #{pane_current_path}' | grep "$PWD" | grep -v "$PWD/" | awk -F' ' '{print $1; exit};')
+      count=$(byobu list-sessions | wc -l)
+
+      echo "$PWD" $target_window >> $BYOBU_LOG
+      if [[ -n "$target_window" ]]; then
+        # Extract session name and window index
+        session_name=$(echo "$target_window" | cut -d: -f1)
+        window_index=$(echo "$target_window" | cut -d: -f2)
+        echo "Found an existing window at $PWD in session $session_name, window $window_index" >> $BYOBU_LOG
+        # Attach to the specific session and select the window
+        byobu attach -t "$session_name" \; select-window -t "$window_index"
+      elif (( count > 1 )); then
+        echo "Creating new byobu window at $PWD" >> $BYOBU_LOG
+        # byobu new-window -c "$PWD"
+        # target_window=$(tmux list-panes -a -F '#{session_name}:#{window_index} #{pane_current_path}' | grep "$PWD" | grep -v "$PWD/" | awk -F' ' '{print $1; exit};')
+        target_window=$(byobu new-window -c "$PWD" -P -F '#{session_name}:#{window_index}')
+        session_name=$(echo "$target_window" | cut -d: -f1)
+        window_index=$(echo "$target_window" | cut -d: -f2)
+        byobu attach -t "$session_name" \; select-window -t "$window_index"
+        # sleep 0.05  # Optional slight delay to avoid race condition
+        # byobu attach \; select-window -t -1
+        # byobu attach
+        # byobu select-window -t -1
+      else
+        echo "Starting new byobu session" >> $BYOBU_LOG
+        byobu new-session -c "$PWD"
+      fi
+    else
+      echo "Starting new byobu session at $PWD" >> $BYOBU_LOG
+      byobu new-session -c "$PWD"
+    fi
+  fi
+fi
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+alias emacs='/usr/bin/emacs -nw'
+
+if [ -f ~/.bash_aliases ]; then
+  . ~/.bash_aliases
+fi
 
 
 # unsetting the suspend key to
