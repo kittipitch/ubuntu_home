@@ -1,0 +1,18 @@
+{
+  "lsp_format_on_save": true,
+
+  "clients": {
+    "haskell-language-server": {
+      "enabled": true,
+      "command": [
+        "bash",
+        "-c",
+        "source ~/.ghcup/env && haskell-language-server-wrapper --lsp"
+      ],
+      "selector": "source.haskell",
+      "settings": {
+        "haskell.formattingProvider": "ormolu"
+      }
+    }
+  }
+}

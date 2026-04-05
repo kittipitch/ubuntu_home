@@ -260,6 +260,10 @@ alias emacs='emacs_or_emacsclient'
 ## base16 theming comment this if you want
 [[ -d "$HOME"/.config/tinted-shell ]] && BASE16_SHELL_SET_BACKGROUND=false bash "$HOME"/.config/tinted-shell/scripts/base16-default-dark.sh
 
+# ----------------------------------------
+# GHCup (Haskell Toolchain)
+# ----------------------------------------
+[[ -f "$HOME/.ghcup/env" ]] && source "$HOME/.ghcup/env"
 
 # ----------------------------------------
 # Tmux Configuration

@@ -5,7 +5,10 @@
 	],
 	"installed_packages":
 	[
+		"LSP",
 		"Package Control",
+		"SublimeLinter",
+		"SublimeLinter-mypy",
 		"Terminus",
 	],
 }

@@ -1,0 +1,10 @@
+{
+  "linters": {
+    "mypy": {
+      "disable": false,
+      "executable": ["mypy"],
+      "args": ["--ignore-missing-imports"],
+      "python": "3.12"
+    }
+  }
+}

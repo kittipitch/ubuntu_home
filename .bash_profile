@@ -8,6 +8,9 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+# GHCup (Haskell Toolchain)
+[[ -f "$HOME/.ghcup/env" ]] && source "$HOME/.ghcup/env"
+
 # START -- For Sublime Text on WSL
 if [ -d "/mnt/d/Program Files/Sublime Text" ]; then
 	WINSUBL="/mnt/d/Program Files/Sublime Text"
