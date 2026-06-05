@@ -1,0 +1,21 @@
+# Lab machine ghcup env (global toolchain)
+# On lab machines the Haskell toolchain is installed ONCE, system-wide, under
+# /usr/local/.ghcup (see cs111env ubuntu_lab_install.sh). It is NOT copied per
+# user. ubuntu_lab_install.sh installs THIS file as each user's ~/.ghcup/env so
+# shells and the Sublime LSP ("source ~/.ghcup/env && haskell-language-server-wrapper")
+# resolve the shared global tools. The default .ghcup/env (which points at
+# $HOME) is for per-user installs and is NOT used on lab machines.
+case ":$PATH:" in
+    *:"/usr/local/.ghcup/bin":*)
+        ;;
+    *)
+        export PATH="$PATH:/usr/local/.ghcup/bin"
+        ;;
+esac
+case ":$PATH:" in
+    *:"/usr/local/bin":*)
+        ;;
+    *)
+        export PATH="$PATH:/usr/local/bin"
+        ;;
+esac

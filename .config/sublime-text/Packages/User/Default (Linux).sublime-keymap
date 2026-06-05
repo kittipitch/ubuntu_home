@@ -1,0 +1,10 @@
+[
+  {
+    "keys": ["alt+`"],
+    "command": "toggle_terminus_panel",
+    "args": {
+      "config_name": null,
+      "cwd": "${file_path:${folder}}"
+    }
+  }
+]
