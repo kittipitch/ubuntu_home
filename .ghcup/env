@@ -1,0 +1,14 @@
+case ":$PATH:" in
+    *:"$HOME/.cabal/bin":*)
+        ;;
+    *)
+        export PATH="$PATH:$HOME/.cabal/bin"
+        ;;
+esac
+case ":$PATH:" in
+    *:"/home/nemo/.ghcup/bin":*)
+        ;;
+    *)
+        export PATH="$PATH:/home/nemo/.ghcup/bin"
+        ;;
+esac
