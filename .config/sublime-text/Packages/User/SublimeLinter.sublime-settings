@@ -4,8 +4,7 @@
       "disable": false,
       "executable": ["mypy"],
       "args": ["--ignore-missing-imports"],
-      "python": "3.10",
-      "--cache-dir": "${file_path}/.mypy_cache"
+      "python": "3.12"
     }
   }
 }
