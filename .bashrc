@@ -272,7 +272,17 @@ alias emacs='emacs_or_emacsclient'
 BYOBU_LOG=/tmp/byobu.log
 echo >> $BYOBU_LOG
 date >> $BYOBU_LOG
-if command -v byobu > /dev/null 2>&1; then
+# Skip byobu autostart when the system clipboard backend is missing, so that
+# byobu mouse-highlight copy always works (Wayland needs wl-copy; X11 needs
+# xsel/xclip). Avoids handing users a byobu where highlight-copy silently fails.
+_byobu_clip_ok() {
+  if [ -n "$WAYLAND_DISPLAY" ]; then
+    command -v wl-copy >/dev/null 2>&1
+  else
+    command -v xsel >/dev/null 2>&1 || command -v xclip >/dev/null 2>&1
+  fi
+}
+if command -v byobu > /dev/null 2>&1 && _byobu_clip_ok; then
   if [[ -t 1 &&  ( "$TERM_PROGRAM" = "WezTerm" || -z "$TERM_PROGRAM" ) && -z "$TMUX" && -z "$SSH_CONNECTION" ]]; then
     [[ -z "$PWD" ]] && PWD="$HOME"
     if byobu list-sessions | grep -q .; then
