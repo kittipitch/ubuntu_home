@@ -1,0 +1,29 @@
+// CS111 lab policy: Sublime must NOT run Python files. Students compile and run
+// by hand from the terminal.
+//
+// HOW THIS WORKS: Sublime resolves package resources by path, and a loose file on
+// disk WINS over the same path inside a .sublime-package zip. This file therefore
+// shadows the "Python.sublime-build" that ships inside Sublime's own
+// Python.sublime-package, whose build is ["python3", "-u", "$file"]. That built-in
+// never loads, so Ctrl+B, F7, Ctrl+Shift+B and Tools > Build all reach THIS file
+// instead. Because the BUILD is neutered rather than the keys, no keymap changes
+// are needed and the Tools menu is covered for free.
+//
+// The override is per-FILE, not per-package: Python syntax highlighting,
+// completions and the rest of Python.sublime-package are unaffected.
+//
+// The built-in "Syntax Check" variant (python3 -m py_compile) is deliberately not
+// redefined here, so it disappears along with the run build.
+//
+// Instead of running the file, this opens the default terminal in the file's own
+// directory and prints the command the student should type. The echo runs first
+// and unconditionally, so the instructions still appear if no terminal launches.
+//
+// Only shell VARIABLES are avoided below ($t etc.) — Sublime expands $file_name
+// and $file_path itself before the shell ever sees the string.
+//
+// To re-enable the normal build, delete this file. Nothing else references it.
+{
+	"selector": "source.python",
+	"shell_command": "echo 'Build is disabled in this lab.'; echo; echo 'Compile and run your program by hand:'; echo; echo '    python3 $file_name'; echo; cd \"$file_path\" 2>/dev/null; if command -v x-terminal-emulator >/dev/null 2>&1; then nohup x-terminal-emulator >/dev/null 2>&1 & elif command -v gnome-terminal >/dev/null 2>&1; then nohup gnome-terminal >/dev/null 2>&1 & elif command -v konsole >/dev/null 2>&1; then nohup konsole >/dev/null 2>&1 & elif command -v xfce4-terminal >/dev/null 2>&1; then nohup xfce4-terminal >/dev/null 2>&1 & elif command -v xterm >/dev/null 2>&1; then nohup xterm >/dev/null 2>&1 & else echo 'No terminal emulator found — press Alt+` for the built-in terminal.'; fi"
+}
