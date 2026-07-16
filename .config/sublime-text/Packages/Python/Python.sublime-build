@@ -1,9 +1,9 @@
-// CS111 lab policy: Sublime must NOT run Python files. Students compile and run
-// by hand from the terminal.
+// CS111 lab policy: Sublime must NOT run Python files. Ctrl+B just opens a
+// terminal at the home folder; students compile and run by hand from there.
 //
 // WHY: when Ctrl+B runs the file for them, students never notice WHERE the file
-// lives — and then submit the wrong file to the grader. Forcing them to pwd/ls/cd
-// to their own file is the point of the exercise, not an obstacle to it.
+// lives — and then submit the wrong file to the grader. Making them pwd/ls/cd to
+// their own file is the point of the exercise, not an obstacle to it.
 //
 // HOW THIS WORKS: Sublime resolves package resources by path, and a loose file on
 // disk WINS over the same path inside a .sublime-package zip. This file therefore
@@ -19,23 +19,20 @@
 // The built-in "Syntax Check" variant (python3 -m py_compile) is deliberately not
 // redefined here, so it disappears along with the run build.
 //
-// DELIBERATE: the terminal opens at HOME (cd ~), NOT at the file's directory, and
-// the message does NOT reveal the folder. Pre-navigating for them would defeat the
-// whole point. $file_name is shown because they already know it — it is open in
-// front of them; $file_path is deliberately NOT used anywhere.
+// DELIBERATE: opens at HOME (cd ~), NOT at the file's directory, and says NOTHING
+// — no path, no filename, no instructions. Pre-navigating or hinting would defeat
+// the point. Neither $file_path nor $file_name is referenced anywhere. The lone
+// echo below fires only when no terminal exists at all, so Ctrl+B never looks dead.
 //
 // `cd ~` uses a tilde, not $HOME, on purpose: Sublime expands $-variables itself
 // before the shell sees this string, so a shell variable could be mangled. Tilde
 // is expanded by the shell and Sublime leaves it alone. For the same reason no
 // shell variables are used in the terminal-detection chain below.
 //
-// NOTE: apostrophes are avoided inside the single-quoted echo strings — one would
-// terminate the quote and break the command.
-//
 // Each Ctrl+B opens a NEW terminal window; repeated presses open several.
 //
 // To re-enable the normal build, delete this file. Nothing else references it.
 {
 	"selector": "source.python",
-	"shell_command": "echo 'Build is disabled in this lab.'; echo; echo 'A terminal is open at your home folder.'; echo 'Find your file, go to it, and run it yourself:'; echo; echo '    pwd            # where am I?'; echo '    ls             # what is here?'; echo '    cd <folder>    # go in'; echo '    python3 $file_name'; echo; echo 'Check pwd before you submit - make sure you send'; echo 'the grader the file you actually ran.'; cd ~ 2>/dev/null; if command -v x-terminal-emulator >/dev/null 2>&1; then nohup x-terminal-emulator >/dev/null 2>&1 & elif command -v gnome-terminal >/dev/null 2>&1; then nohup gnome-terminal >/dev/null 2>&1 & elif command -v konsole >/dev/null 2>&1; then nohup konsole >/dev/null 2>&1 & elif command -v xfce4-terminal >/dev/null 2>&1; then nohup xfce4-terminal >/dev/null 2>&1 & elif command -v xterm >/dev/null 2>&1; then nohup xterm >/dev/null 2>&1 & else echo 'No terminal emulator found - press Alt+` for the built-in terminal.'; fi"
+	"shell_command": "cd ~ 2>/dev/null; if command -v x-terminal-emulator >/dev/null 2>&1; then nohup x-terminal-emulator >/dev/null 2>&1 & elif command -v gnome-terminal >/dev/null 2>&1; then nohup gnome-terminal >/dev/null 2>&1 & elif command -v konsole >/dev/null 2>&1; then nohup konsole >/dev/null 2>&1 & elif command -v xfce4-terminal >/dev/null 2>&1; then nohup xfce4-terminal >/dev/null 2>&1 & elif command -v xterm >/dev/null 2>&1; then nohup xterm >/dev/null 2>&1 & else echo 'No terminal emulator found - press Alt+` for the built-in terminal.'; fi"
 }
