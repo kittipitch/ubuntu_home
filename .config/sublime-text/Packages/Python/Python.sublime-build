@@ -31,8 +31,14 @@
 //
 // Each Ctrl+B opens a NEW terminal window; repeated presses open several.
 //
+// The key is "shell_cmd", NOT "shell_command": ExecCommand.run() in Sublime's own
+// Default/exec.py takes shell_cmd, and an unknown key raises
+//   __init__() got an unexpected keyword argument ...
+// which surfaces to the student as a traceback in the build panel. Verified on
+// Sublime 4192.
+//
 // To re-enable the normal build, delete this file. Nothing else references it.
 {
 	"selector": "source.python",
-	"shell_command": "cd ~ 2>/dev/null; if command -v x-terminal-emulator >/dev/null 2>&1; then nohup x-terminal-emulator >/dev/null 2>&1 & elif command -v gnome-terminal >/dev/null 2>&1; then nohup gnome-terminal >/dev/null 2>&1 & elif command -v konsole >/dev/null 2>&1; then nohup konsole >/dev/null 2>&1 & elif command -v xfce4-terminal >/dev/null 2>&1; then nohup xfce4-terminal >/dev/null 2>&1 & elif command -v xterm >/dev/null 2>&1; then nohup xterm >/dev/null 2>&1 & else echo 'No terminal emulator found - press Alt+` for the built-in terminal.'; fi"
+	"shell_cmd": "cd ~ 2>/dev/null; if command -v x-terminal-emulator >/dev/null 2>&1; then nohup x-terminal-emulator >/dev/null 2>&1 & elif command -v gnome-terminal >/dev/null 2>&1; then nohup gnome-terminal >/dev/null 2>&1 & elif command -v konsole >/dev/null 2>&1; then nohup konsole >/dev/null 2>&1 & elif command -v xfce4-terminal >/dev/null 2>&1; then nohup xfce4-terminal >/dev/null 2>&1 & elif command -v xterm >/dev/null 2>&1; then nohup xterm >/dev/null 2>&1 & else echo 'No terminal emulator found - press Alt+` for the built-in terminal.'; fi"
 }
