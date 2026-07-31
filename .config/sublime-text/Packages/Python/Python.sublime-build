@@ -1,5 +1,5 @@
 // CS111 lab policy: Sublime must NOT run Python files. Ctrl+B just opens a
-// terminal at the home folder; students compile and run by hand from there.
+// Terminus tab at the home folder; students compile and run by hand from there.
 //
 // WHY: when Ctrl+B runs the file for them, students never notice WHERE the file
 // lives — and then submit the wrong file to the grader. Making them pwd/ls/cd to
@@ -19,26 +19,44 @@
 // The built-in "Syntax Check" variant (python3 -m py_compile) is deliberately not
 // redefined here, so it disappears along with the run build.
 //
-// DELIBERATE: opens at HOME (cd ~), NOT at the file's directory, and says NOTHING
-// — no path, no filename, no instructions. Pre-navigating or hinting would defeat
-// the point. Neither $file_path nor $file_name is referenced anywhere. The lone
-// echo below fires only when no terminal exists at all, so Ctrl+B never looks dead.
+// TERMINUS, not an external terminal emulator: "target": "terminus_open" hands the
+// build off to the Terminus package (already installed/required lab-wide) instead
+// of spawning gnome-terminal/xterm/etc. Same "like Alt+`" interactive tab, just
+// triggered from Ctrl+B/Ctrl+Shift+B/F7/Tools > Build too.
 //
-// `cd ~` uses a tilde, not $HOME, on purpose: Sublime expands $-variables itself
-// before the shell sees this string, so a shell variable could be mangled. Tilde
-// is expanded by the shell and Sublime leaves it alone. For the same reason no
-// shell variables are used in the terminal-detection chain below.
+// DELIBERATE: opens at HOME, NOT at the file's directory, and says NOTHING — no
+// path, no filename, no instructions. Pre-navigating or hinting would defeat the
+// point. Neither $file_path nor $file_name is referenced anywhere.
 //
-// Each Ctrl+B opens a NEW terminal window; repeated presses open several.
+// shell_cmd does `cd ~` then `exec bash -l` — exec REPLACES the shell_cmd
+// process with an interactive login shell, so the Terminus tab doesn't just run
+// one command and go dead; it stays open exactly like a normal terminal. cd is
+// done in shell_cmd (not via Terminus's own "cwd" option) so behavior doesn't
+// depend on whether Terminus expands "~" itself.
+//
+// Hardcoded "bash", NOT "$SHELL" or "${SHELL:-bash}": Sublime expands
+// "${var:default}" itself (snippet-style variable substitution) in shell_cmd
+// BEFORE the shell ever sees the string. SHELL isn't a Sublime build variable,
+// so "${SHELL:-bash}" silently becomes the literal text "-bash" — which then
+// fails as `exec "-bash" -l` (invalid option). Escaping the $ doesn't help
+// either: Terminus performs its OWN second expansion pass downstream and
+// mangles it again. Verified live in Sublime 4200 + Terminus 0.3.30. Terminus
+// already only ever launches bash on Linux, so hardcoding loses nothing.
+//
+// Each Ctrl+B opens a NEW Terminus tab; repeated presses open several.
 //
 // The key is "shell_cmd", NOT "shell_command": ExecCommand.run() in Sublime's own
 // Default/exec.py takes shell_cmd, and an unknown key raises
 //   __init__() got an unexpected keyword argument ...
 // which surfaces to the student as a traceback in the build panel. Verified on
-// Sublime 4192.
+// Sublime 4192. Terminus's terminus_open reuses the same "shell_cmd" key.
 //
 // To re-enable the normal build, delete this file. Nothing else references it.
 {
 	"selector": "source.python",
-	"shell_cmd": "cd ~ 2>/dev/null; if command -v x-terminal-emulator >/dev/null 2>&1; then nohup x-terminal-emulator >/dev/null 2>&1 & elif command -v gnome-terminal >/dev/null 2>&1; then nohup gnome-terminal >/dev/null 2>&1 & elif command -v konsole >/dev/null 2>&1; then nohup konsole >/dev/null 2>&1 & elif command -v xfce4-terminal >/dev/null 2>&1; then nohup xfce4-terminal >/dev/null 2>&1 & elif command -v xterm >/dev/null 2>&1; then nohup xterm >/dev/null 2>&1 & else echo 'No terminal emulator found - press Alt+` for the built-in terminal.'; fi"
+	"target": "terminus_open",
+	"shell_cmd": "cd ~ 2>/dev/null; exec bash -l",
+	"auto_close": false,
+	"focus": true,
+	"title": "Build"
 }
